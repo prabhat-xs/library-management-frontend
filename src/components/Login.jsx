@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useContext } from "react";
+import {AuthContext} from "../main";
 
 function Login() {
+  const {setUser,setIsLoggedIn} = useContext(AuthContext)
   const [data, setData] = useState({
     Email: "",
     Password: "",
@@ -18,7 +21,10 @@ function Login() {
       {
         withCredentials: true,
       }
+      
     );
+    setIsLoggedIn(true)
+    setUser(res.User)
   };
   return (
     <>

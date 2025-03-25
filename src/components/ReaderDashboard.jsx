@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
+import BookList from "./BookList";
 
 function ReaderDashboard() {
   return (
-    <div>ReaderDashboard</div>
-  )
+    <div>
+      ReaderDashboard
+      <BookList />
+      <RequestList />
+    </div>
+  );
 }
 
-export default ReaderDashboard
+export default ReaderDashboard;

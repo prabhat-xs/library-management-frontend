@@ -1,9 +1,15 @@
-import React from 'react'
+import React from "react";
 
-function UserItem() {
+function UserItem(user) {
+  const { Name, Email, ContactNumber, Role } = user;
   return (
-    <div>UserItem</div>
-  )
+    <div>
+      {Name}
+      {Email}
+      {ContactNumber}
+      {Role}
+    </div>
+  );
 }
 
-export default UserItem
+export default UserItem;

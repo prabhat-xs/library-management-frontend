@@ -1,9 +1,20 @@
-import React from 'react'
+import React from "react";
 
-function RequestList() {
+async function RequestList() {
+  const [reqs, setReq] = useState(null);
+  try {
+    const res = await axios.get("url");
+    setReq(res.user);
+  } catch (error) {}
+
   return (
-    <div>RequestList</div>
-  )
+    <div>
+      UserList
+      {reqs.map((req) => {
+        <RequestItemItem key={req.id} user={req} />;
+      })}
+    </div>
+  );
 }
 
-export default RequestList
+export default RequestList;

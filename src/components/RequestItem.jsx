@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
 
-function RequestItem() {
+function RequestItem(req) {
+  const { ReqID, ReaderID, Type } = req;
   return (
-    <div>RequestItem</div>
-  )
+    <div>
+      {ReqID}
+      {ReaderID}
+      {Type}
+    </div>
+  );
 }
 
-export default RequestItem
+export default RequestItem;
