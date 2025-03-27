@@ -1,32 +1,28 @@
-
-import { useState, useEffect ,useContext} from "react";
+import { useState, useEffect } from "react";
 import { fetchBooks, deleteBook } from "../services/api";
 import BookItem from "./BookItem";
 import BookForm from "./BookForm";
 import { toast } from "react-hot-toast";
-import  { useAuth } from "../App";
-
+import { useAuth } from "../App";
 
 const BookList = ({ role }) => {
-  // const { role } = useAuth()
-  // role = role.toLowerCase()
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [bookToEdit, setBookToEdit] = useState(null);
-
+ 
   useEffect(() => {
     loadBooks();
   }, []);
 
   const loadBooks = async () => {
     const data = await fetchBooks(role);
-    setBooks(data);
+    setBooks(data.books);
   };
 
   const handleDelete = async (id) => {
     try {
-      await deleteBook(role,id);
+      await deleteBook(role, id);
       toast.success("Book deleted successfully!");
       loadBooks();
     } catch (error) {
@@ -35,6 +31,7 @@ const BookList = ({ role }) => {
   };
 
   const handleEdit = (book) => {
+    console.log
     setBookToEdit(book);
     setShowForm(true);
   };
@@ -54,6 +51,7 @@ const BookList = ({ role }) => {
 
       {showForm && (
         <BookForm
+          role = {role}
           bookToEdit={bookToEdit}
           onBookSaved={loadBooks}
           onClose={() => {
@@ -75,11 +73,11 @@ const BookList = ({ role }) => {
         <tbody>
           {books
             .filter((book) =>
-              book.title.toLowerCase().includes(searchTerm.toLowerCase())
+              book?.title.toLowerCase().includes(searchTerm.toLowerCase())
             )
             .map((book) => (
               <BookItem
-                key={book.id}
+                key={book.isbn}
                 book={book}
                 role={role}
                 onEdit={handleEdit}

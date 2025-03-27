@@ -1,29 +1,26 @@
 import { useState, useEffect, useContext } from "react";
 import { addBook, updateBook } from "../services/api";
 import { toast } from "react-hot-toast";
-import { AuthContext } from "../main";
 
-const BookForm = ({ bookToEdit, onBookSaved, onClose }) => {
-  const { user } = useContext(AuthContext);
+const BookForm = ({ role, bookToEdit, onBookSaved, onClose }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
-  const [genre, setGenre] = useState("");
-
+  const [copies, setCopies] = useState(0);
+  //todo add all applicable fields
   useEffect(() => {
     if (bookToEdit) {
       setTitle(bookToEdit.title);
       setAuthor(bookToEdit.author);
-      setGenre(bookToEdit.genre);
+      setCopies(bookToEdit.available_copies);
     }
   }, [bookToEdit]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const bookData = { title, author, genre };
+    const bookData = { title, author, copies };
 
     try {
       if (bookToEdit) {
-        await updateBook(user,bookToEdit.id, bookData);
+        await updateBook(role, bookToEdit.ISBN, bookData);
         toast.success("Book updated successfully!");
       } else {
         await addBook(user, bookData);
@@ -45,21 +42,18 @@ const BookForm = ({ bookToEdit, onBookSaved, onClose }) => {
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          required
         />
         <input
           type="text"
           placeholder="Author"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
-          required
         />
         <input
           type="text"
-          placeholder="Genre"
-          value={genre}
-          onChange={(e) => setGenre(e.target.value)}
-          required
+          placeholder="Copies"
+          value={copies}
+          onChange={(e) => setCopies(e.target.value)}
         />
         <button type="submit">{bookToEdit ? "Update" : "Add"} Book</button>
         <button type="button" onClick={onClose}>

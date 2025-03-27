@@ -1,6 +1,4 @@
 import axios from "axios";
-import { AuthContext } from "../main";
-import { useContext } from "react";
 
 const API_BASE_URL = "http://localhost:8080/v1";
 
@@ -18,8 +16,7 @@ export const setAuthToken = (token) => {
 };
 
 export const fetchBooks = async (Role) => {
-  console.log(Role)
-  const response = await api.get(`${Role}/books`);
+  const response = await api.get(`${Role}/books`, { withCredentials: true });
   return response.data;
 };
 
@@ -27,8 +24,10 @@ export const addBook = async (user, book) => {
   const response = await api.post(`${user.Role}/books/add`, book);
   return response.data;
 };
-export const updateBook = async (user, id, book) => {
-  const response = await api.put(`${user.Role}/books/${id}`, book);
+export const updateBook = async (role, id, book) => {
+  const response = await api.patch(`${role}/books/${id}`, book, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
@@ -64,7 +63,9 @@ export const deleteUser = async (user, id) => {
 
 // **Auth APIs**
 export const login = async (credentials) => {
-  const response = await api.post("/auth/login", credentials);
+  const response = await api.post("/auth/login", credentials, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
