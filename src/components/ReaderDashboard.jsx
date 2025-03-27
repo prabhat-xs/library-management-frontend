@@ -31,8 +31,8 @@ const ReaderDashboard = () => {
       </div>
       <div className="tab-content">
         {activeTab === "books" && <BookList role={"reader"} />}
-        {/* {activeTab === "issued" && <IssuedBooks />} */}
-        {activeTab === "requests" && <RequestList />}
+        {/* {activeTab === "issued" && <IssuedBooks role={"reader"} />} */}
+        {activeTab === "requests" && <RequestList role={"reader"} />}
       </div>
     </div>
   );

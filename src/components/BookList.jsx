@@ -3,14 +3,13 @@ import { fetchBooks, deleteBook } from "../services/api";
 import BookItem from "./BookItem";
 import BookForm from "./BookForm";
 import { toast } from "react-hot-toast";
-import { useAuth } from "../App";
 
 const BookList = ({ role }) => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [bookToEdit, setBookToEdit] = useState(null);
- 
+
   useEffect(() => {
     loadBooks();
   }, []);
@@ -31,7 +30,7 @@ const BookList = ({ role }) => {
   };
 
   const handleEdit = (book) => {
-    console.log
+    console.log;
     setBookToEdit(book);
     setShowForm(true);
   };
@@ -51,7 +50,7 @@ const BookList = ({ role }) => {
 
       {showForm && (
         <BookForm
-          role = {role}
+          role={role}
           bookToEdit={bookToEdit}
           onBookSaved={loadBooks}
           onClose={() => {

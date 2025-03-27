@@ -5,6 +5,7 @@ const API_BASE_URL = "http://localhost:8080/v1";
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 export const setAuthToken = (token) => {
@@ -25,9 +26,7 @@ export const addBook = async (user, book) => {
   return response.data;
 };
 export const updateBook = async (role, id, book) => {
-  const response = await api.patch(`${role}/books/${id}`, book, {
-    withCredentials: true,
-  });
+  const response = await api.patch(`${role}/books/${id}`, book);
   return response.data;
 };
 
@@ -37,16 +36,20 @@ export const deleteBook = async (user, id) => {
 };
 
 export const fetchUsers = async (role) => {
-  const response = await api.get(`${role}/users`);
+  const response = await api.get(`${role}/users`, { withCredentials: true });
   return response.data;
 };
 
 export const addUser = async (user, _user) => {
   let response;
   if (user.Role == admin) {
-    response = await api.post(`${user.Role}/create-reader`, _user);
+    response = await api.post(`${user.Role}/create-reader`, _user, {
+      withCredentials: true,
+    });
   } else {
-    response = await api.post(`${user.Role}/create-admin`, _user);
+    response = await api.post(`${user.Role}/create-admin`, _user, {
+      withCredentials: true,
+    });
   }
   return response.data;
 };
@@ -63,14 +66,12 @@ export const deleteUser = async (user, id) => {
 
 // **Auth APIs**
 export const login = async (credentials) => {
-  const response = await api.post("/auth/login", credentials, {
-    withCredentials: true,
-  });
+  const response = await api.post("/auth/login", credentials);
   return response.data;
 };
 
 export const signup = async (userData) => {
-  const response = await api.post("/auth/signup", userData);
+  const response = await axios.post(`${API_BASE_URL}/auth/signup`, userData);
   return response.data;
 };
 
@@ -79,8 +80,11 @@ export const signup = async (userData) => {
 //   return response.data;
 // };
 
-export const fetchRequests = async (user) => {
-  const response = await api.get(`${user.Role}/requests/all`);
+export const fetchRequests = async (role) => {
+  let response;
+  if (role === "reader") return await api.get(`${role}/books/requests`);
+
+  response = await api.get(`${role}/requests/all`);
   return response.data;
 };
 

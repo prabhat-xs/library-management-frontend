@@ -8,7 +8,7 @@ const UserList = ({ role }) => {
   useEffect(() => {
     const loadUsers = async () => {
       const data = await fetchUsers(role);
-      setUsers(data);
+      setUsers(data.users);
     };
     loadUsers();
   }, []);

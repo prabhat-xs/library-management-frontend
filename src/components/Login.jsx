@@ -2,8 +2,9 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login, setAuthToken } from "../services/api";
 import { AuthContext, useAuth } from "../App";
-import toast from "react-hot-toast";
-
+import toast from "react-hot-toast"; 
+import Cookies from "js-cookie";
+// todo use react-cookie pkg
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,12 +16,12 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    try {
+    try { 
       const res = await login({ email, password });
       setUser(res.user);
-      setAuthToken(res.token);
-      // localStorage.setItem("token", res.token);
-      toast.success("Login successful");
+      setAuthToken(Cookies.get("token"));
+      // setAuthToken(res.token);
+      toast.success("Login succe  ssful");
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
