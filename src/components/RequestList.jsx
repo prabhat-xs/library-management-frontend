@@ -1,20 +1,38 @@
-import React from "react";
+import { useState, useEffect } from "react";
+import { fetchRequests } from "../services/api";
+import RequestItem from "./RequestItem";
 
-async function RequestList() {
-  const [reqs, setReq] = useState(null);
-  try {
-    const res = await axios.get("url");
-    setReq(res.user);
-  } catch (error) {}
+const RequestList = ({ role }) => {
+  const [requests, setRequests] = useState([]);
+
+  useEffect(() => {
+    const loadRequests = async () => {
+      const data = await fetchRequests();
+      setRequests(data);
+    };
+    loadRequests();
+  }, []);
 
   return (
-    <div>
-      UserList
-      {reqs.map((req) => {
-        <RequestItemItem key={req.id} user={req} />;
-      })}
+    <div className="request-list">
+      <h2>Requests</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Book</th>
+            <th>User</th>
+            <th>Status</th>
+            {role !== "reader" && <th>Actions</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {requests.map((request) => (
+            <RequestItem key={request.id} request={request} role={role} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
-}
+};
 
 export default RequestList;

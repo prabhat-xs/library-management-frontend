@@ -1,59 +1,58 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useContext } from "react";
-import { AuthContext } from "../main";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../services/api";
+import { useAuth } from "../App";
+import toast from "react-hot-toast";
 
-function Login() {
-  const navigate = useNavigate();
-  const { setUser, setIsLoggedIn } = useContext(AuthContext);
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //todo
-  const [data, setData] = useState({
-    Email: "",
-    Password: "",
-  });
-  const loginHandler = async (e) => {
-    e.preventDefault();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { setUser } = useAuth();
 
-    const { user } = await axios.post(
-      `${import.meta.env.URI}/auth/login`,
-      {
-        email,
-        password,
-      },
-      {
-        withCredentials: true,
-      }
-    );
-    setIsLoggedIn(true);
-    setUser(user);
-    navigate("/dashboard");
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const data = await login({ email, password });
+      console.log(data)
+      localStorage.setItem("token", data.token);
+      setUser(data.user);
+
+      toast.success("Login successful");
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
-    <>
-      <div>Login</div>
-      <form className="loginForm" onSubmit={loginHandler} method="post">
+    <div className="auth-container">
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
         <input
           type="email"
-          name="email"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
         <input
           type="password"
-          name="password"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          id=""
           required
         />
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
       </form>
-    </>
+    </div>
   );
-}
+};
 
 export default Login;

@@ -1,15 +1,35 @@
-import React from "react";
+// const BookItem = ({ book, role }) => {
+//   return (
+//     <tr>
+//       <td>{book.title}</td>
+//       <td>{book.author}</td>
+//       <td>{book.genre}</td>
+//       {role !== "reader" && (
+//         <td>
+//           <button>Edit</button>
+//           <button>Delete</button>
+//         </td>
+//       )}
+//     </tr>
+//   );
+// };
 
-function BookItem(book) {
-  const { isbn, title, author, version, publisher } = book;
+// export { BookItem };
+
+const BookItem = ({ book, role, onEdit, onDelete }) => {
   return (
-    <>
-      <div className="book">
-        {isbn} {title} {author} {version} {publisher}
-      </div>
-      <hr />
-    </>
+    <tr>
+      <td>{book.title}</td>
+      <td>{book.author}</td>
+      <td>{book.genre}</td>
+      {role !== "reader" && (
+        <td>
+          <button onClick={() => onEdit(book)}>Edit</button>
+          <button onClick={() => onDelete(book.id)}>Delete</button>
+        </td>
+      )}
+    </tr>
   );
-}
+};
 
 export default BookItem;

@@ -1,14 +1,25 @@
-import React from "react";
+const RequestItem = ({ request, role }) => {
+  const handleAccept = () => {
+    console.log(`Accepted request ${request.id}`);
+  };
 
-function RequestItem(req) {
-  const { ReqID, ReaderID, Type } = req;
+  const handleReject = () => {
+    console.log(`Rejected request ${request.id}`);
+  };
+
   return (
-    <div>
-      {ReqID}
-      {ReaderID}
-      {Type}
-    </div>
+    <tr>
+      <td>{request.bookTitle}</td>
+      <td>{request.userName}</td>
+      <td>{request.status}</td>
+      {role !== "reader" && (
+        <td>
+          <button onClick={handleAccept}>Accept</button>
+          <button onClick={handleReject}>Reject</button>
+        </td>
+      )}
+    </tr>
   );
-}
+};
 
 export default RequestItem;

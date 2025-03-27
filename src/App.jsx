@@ -1,40 +1,88 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { toast, Toaster } from "react-hot-toast";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { useState, useEffect, createContext, useContext } from "react";
+import Dashboard from "./pages/Dashboard";
+import Auth from "./pages/Auth";
+// import { getUserData, login, signup } from "./services/api";
+import toast, { Toaster } from "react-hot-toast";
+import OwnerDashboard from "./components/OwnerDashboard";
+import AdminDashboard from "./components/AdminDashboard";
+import ReaderDashboard from "./components/ReaderDashboard";
 
-function App() {
-  const [count, setCount] = useState(0);
-  const clickHandler = (count) => {
-    count = count+1
-    setCount(count)
-    toast.error("Button clicked");
+export const AuthContext = createContext();
+
+const App = () => {
+  const [user, setUser] = useState(null);
+  const [role, setRole] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const userData = await getUserData();
+        setUser(userData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        localStorage.removeItem("token");
+        toast.error("Session expired, please log in again");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    toast.success("Logged out successfully");
   };
+
+  if (loading) return <div>Loading...</div>;
+
   return (
-    <>
-      <Toaster />
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={clickHandler}>count is {count}</button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <AuthContext.Provider value={{ user, setUser, logout, role, setRole }}>
+      <Toaster position="top-right" />
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              user ? <Navigate to="/dashboard" /> : <Navigate to="/auth" />
+            }
+          />
+          <Route path="/auth" element={<Auth />} />
+          <Route
+            path="/dashboard"
+            element={
+              user ? (
+                user.Role === "owner" ? (
+                  <OwnerDashboard />
+                ) : user.Role === "Admin" ? (
+                  <AdminDashboard />
+                ) : (
+                  <ReaderDashboard />
+                )
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
+          />
+        </Routes>
+      </Router>
+    </AuthContext.Provider>
   );
-}
+};
 
 export default App;
+
+export const useAuth = () => useContext(AuthContext);
