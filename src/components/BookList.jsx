@@ -19,18 +19,18 @@ const BookList = ({ role }) => {
     setBooks(data.books);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (isbn) => {
     try {
-      await deleteBook(role, id);
+      await deleteBook(role, isbn);
       toast.success("Book deleted successfully!");
       loadBooks();
     } catch (error) {
+      console.log(error);
       toast.error("Failed to delete book.");
     }
   };
 
   const handleEdit = (book) => {
-    console.log;
     setBookToEdit(book);
     setShowForm(true);
   };
@@ -65,7 +65,9 @@ const BookList = ({ role }) => {
           <tr>
             <th>Title</th>
             <th>Author</th>
-            <th>Genre</th>
+            <th>Publisher</th>
+            <th>Version</th>
+            <th>Copies</th>
             {role !== "reader" && <th>Actions</th>}
           </tr>
         </thead>
@@ -80,7 +82,7 @@ const BookList = ({ role }) => {
                 book={book}
                 role={role}
                 onEdit={handleEdit}
-                onDelete={handleDelete}
+                onDelete={() => handleDelete(book.isbn)}
               />
             ))}
         </tbody>

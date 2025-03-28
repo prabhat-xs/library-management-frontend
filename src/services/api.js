@@ -16,27 +16,23 @@ export const setAuthToken = (token) => {
   }
 };
 
-export const fetchBooks = async (Role) => {
-  const response = await api.get(`${Role}/books`, { withCredentials: true });
+// AUTH APIs
+export const login = async (credentials) => {
+  const response = await api.post("/auth/login", credentials);
   return response.data;
 };
 
-export const addBook = async (user, book) => {
-  const response = await api.post(`${user.Role}/books/add`, book);
-  return response.data;
-};
-export const updateBook = async (role, id, book) => {
-  const response = await api.patch(`${role}/books/${id}`, book);
+export const signup = async (userData) => {
+  const response = await axios.post(`${API_BASE_URL}/auth/signup`, userData);
   return response.data;
 };
 
-export const deleteBook = async (user, id) => {
-  const response = await api.delete(`${user.Role}/books/${id}`);
-  return response.data;
-};
+
+
+// USER APIs
 
 export const fetchUsers = async (role) => {
-  const response = await api.get(`${role}/users`, { withCredentials: true });
+  const response = await api.get(`${role}/users`);
   return response.data;
 };
 
@@ -64,22 +60,28 @@ export const deleteUser = async (user, id) => {
   return response.data;
 };
 
-// **Auth APIs**
-export const login = async (credentials) => {
-  const response = await api.post("/auth/login", credentials);
+// BOOK APIs
+export const fetchBooks = async (Role) => {
+  const response = await api.get(`${Role}/books`, { withCredentials: true });
   return response.data;
 };
 
-export const signup = async (userData) => {
-  const response = await axios.post(`${API_BASE_URL}/auth/signup`, userData);
+export const addBook = async (role, book) => {
+  const response = await api.post(`${role}/books/add`, book);
+  return response.data;
+};
+export const updateBook = async (role, id, book) => {
+  const response = await api.patch(`${role}/books/${id}`, book);
   return response.data;
 };
 
-// export const fetchCurrentUser = async () => {
-//   const response = await api.get("/auth/me");
-//   return response.data;
-// };
+export const deleteBook = async (role, id) => {
+  const response = await api.delete(`${role}/books/${id}`);
+  console.log(response);
+  return response.data;
+};
 
+// REQUEST APIs
 export const fetchRequests = async (role) => {
   let response;
   if (role === "reader") return await api.get(`${role}/books/requests`);
@@ -87,8 +89,3 @@ export const fetchRequests = async (role) => {
   response = await api.get(`${role}/requests/all`);
   return response.data;
 };
-
-// export const getUserData = async () => {
-//   const response = await api.get("/auth/me");
-//   return response.data;
-// };

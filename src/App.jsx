@@ -4,7 +4,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { useState, useEffect, createContext, useContext } from "react";
+import Cookies from "js-cookie";
+import { useState, createContext, useContext, useMemo } from "react";
 import Auth from "./pages/Auth";
 import { setAuthToken } from "./services/api";
 import toast, { Toaster } from "react-hot-toast";
@@ -16,14 +17,13 @@ export const AuthContext = createContext();
 
 const App = () => {
   const [user, setUser] = useState(null);
-  const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
 
   // useEffect(() => {
   // const fetchUser = async () => {
   const token = localStorage.getItem("token");
   if (token) {
-    setAuthToken(token);
+    // setAuthToken(token);
   }
   // try {
   //   const userData = await getUserData();
@@ -40,7 +40,7 @@ const App = () => {
   // }, []);
 
   const logout = () => {
-    localStorage.removeItem("token");
+    Cookies.remove("token");
     setUser(null);
     toast.success("Logged out successfully");
   };
@@ -48,7 +48,7 @@ const App = () => {
   // if (loading) return <div>Loading...</div>;
 
   return (
-    <AuthContext.Provider value={{ user, setUser, logout, role, setRole }}>
+    <AuthContext.Provider value={useMemo(() => ({ user, setUser, logout }),[user,setUser])}>
       <Toaster position="top-right" />
       <Router>
         <Routes>

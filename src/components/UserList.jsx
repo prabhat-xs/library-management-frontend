@@ -21,6 +21,7 @@ const UserList = ({ role }) => {
           <tr>
             <th>Name</th>
             <th>Email</th>
+            <th>Phone Number</th>
             <th>Role</th>
             {(role === "owner" || role === "admin") && <th>Actions</th>}
           </tr>
